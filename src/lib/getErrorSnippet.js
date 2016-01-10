@@ -1,5 +1,3 @@
-import CodeError from 'code-error';
-
 const css = (`
   /* reset */
   #trip-build-error-report,
@@ -33,7 +31,7 @@ export default function getErrorSnippet(error) {
 
     html += `<pre><span style="color:red">${escape(error.message)}</span>`;
 
-    if (error instanceof CodeError) {
+    if (error && error.__CodeError) {
       html += `\n\n${error.htmlExcerpt}\n`;
     }
 

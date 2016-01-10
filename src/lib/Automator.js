@@ -6,7 +6,6 @@
 
 import _ from 'lodash';
 import chalk from 'chalk';
-import CodeError from 'code-error';
 import Destination from './Destination';
 import Immutable from 'immutable';
 import indentString from 'indent-string';
@@ -87,7 +86,7 @@ async function build(priv, safeDelete) {
         // report the error here if it's an easy one
         console.error(`\n  error from ${waypoint._waypointName}\n`);
 
-        if (error instanceof CodeError) {
+        if (error && error.__CodeError) {
           console.error(indentString(chalk.red(error.message), ' ', 2));
 
           console.error('');
