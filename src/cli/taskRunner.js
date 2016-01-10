@@ -1,3 +1,4 @@
+import figures from 'figures';
 import prettyHRTime from 'pretty-hrtime';
 import Promise from 'bluebird';
 import {grey, cyan, red, green} from 'chalk';
@@ -42,7 +43,7 @@ export async function run(taskName) {
   catch (error) {
     log(
       cyan(taskName),
-      red('✘ error'),
+      red(`${figures.cross} error`),
       grey(prettyHRTime(process.hrtime(taskStart)))
     );
 
@@ -52,7 +53,7 @@ export async function run(taskName) {
 
   log(
     cyan(taskName),
-    green('✓'),
+    green(figures.tick),
     grey(prettyHRTime(process.hrtime(taskStart)))
   );
 }
