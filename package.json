@@ -1,7 +1,7 @@
 {
   "name": "trip",
   "description": "A fast build system",
-  "version": "0.8.1",
+  "version": "0.8.2",
   "babel": {
     "presets": [
       "es2015-node4"
