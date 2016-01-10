@@ -87,7 +87,8 @@
     "dist/lib",
     "dist/cli",
     "src/lib",
-    "src/cli"
+    "src/cli",
+    "cli.js"
   ],
   "jsnext:main": "src/lib",
   "license": "MIT",
