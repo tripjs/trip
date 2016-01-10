@@ -2,11 +2,9 @@
 
 import 'source-map-support/register';
 import assert from 'assert';
-import cp from 'child_process';
+import execa from 'execa';
 import path from 'path';
-import Promise from 'bluebird';
 import {grey} from 'chalk';
-const exec = Promise.promisify(cp.exec, {multiArgs: true});
 
 describe('trip CLI', () => {
   const cliPath = path.resolve(__dirname, '..', '..', 'cli.js');
@@ -17,7 +15,7 @@ describe('trip CLI', () => {
   it('can run subtasks in series and parallel', async function () {
     this.timeout(5000);
 
-    const {stdout, stderr} = await run(cliPath + ' parallel-subtasks');
+    const {stdout, stderr} = await run(cliPath, ['parallel-subtasks']);
     const lines = getLogs(stdout);
 
     assert.strictEqual(lines[0], 'thing 1');
@@ -52,8 +50,8 @@ function getLogs(stdout) {
 }
 
 // run a command and print out the output so we can see what's going on
-async function run(command) {
-  const [stdout, stderr] = await exec(command);
+async function run(command, commandArgs) {
+  const {stdout, stderr} = await execa(command, commandArgs);
 
   console.log(grey('\n\n=== STDOUT:\n', stdout, '\n=== /STDOUT'));
   console.log(grey('\n\n=== STDERR:', stderr, '\n=== /STDERR'));

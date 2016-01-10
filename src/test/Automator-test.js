@@ -24,7 +24,7 @@ describe('Automator class', () => {
     wrench.copyDirSyncRecursive(fixturesSrc, tmpSrc);
   });
 
-  const controller = new Automator({
+  const automator = new Automator({
     cwd: tmp,
     src: tmpSrc,
     dest: tmpDest,
@@ -38,9 +38,11 @@ describe('Automator class', () => {
     ],
   });
 
-  it('works', () => {
+  it('works', function () {
+    this.timeout(20000);
+
     return Promise.resolve()
-      .then(() => controller.start())
+      .then(() => automator.start())
       .then(() => {
         const jsContents = fs.readFileSync(path.resolve(tmpDest, 'main.js'), 'utf8');
         const htmlContents = fs.readFileSync(path.resolve(tmpDest, 'index.html'), 'utf8');

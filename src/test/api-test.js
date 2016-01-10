@@ -46,7 +46,7 @@ describe('trip() API', () => {
     );
 
   it('works', function () {
-    this.timeout(5000);
+    this.timeout(20000);
 
     return Promise.resolve()
       .then(() => app.build(tmpSrc + '/**', tmpDest, {

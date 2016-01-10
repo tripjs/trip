@@ -12,7 +12,7 @@
 import Automator from './Automator';
 import browserSync from 'browser-sync';
 import connect from 'connect';
-import errorSymbol from 'error-symbol';
+import figures from 'figures';
 import getBSSnippet from './getBSSnippet';
 import getErrorSnippet from './getErrorSnippet';
 import http from 'http';
@@ -27,7 +27,6 @@ import resolveFrom from 'resolve-from';
 import serveStatic from 'serve-static';
 import stackTrace from 'stack-trace';
 import staticTransform from 'connect-static-transform';
-import successSymbol from 'success-symbol';
 import url from 'url';
 import {EventEmitter2} from 'eventemitter2';
 import {isString, isFunction, isArray, isBoolean, isNumber} from 'lodash';
@@ -252,7 +251,7 @@ export class Trip extends EventEmitter2 {
       if (options.browserSync) names.push('browserSync', 'bsUI', 'weinre');
 
       return Promise.resolve(portscannerPlus.getPorts(names.length, 8000, 9000, names))
-        .timeout(3000, 'Timed out scanning for free ports');
+        .timeout(10000, 'Timed out scanning for free ports');
     })() : Promise.resolve();
 
     // get a browser-sync server going (if enabled)
@@ -385,13 +384,13 @@ export class Trip extends EventEmitter2 {
       }
       else console.log(grey('  [no changes]'));
 
-      console.log(grey(`  ${successSymbol} ` + prettyHRTime(duration)));
+      console.log(grey(`  ${figures.tick} ` + prettyHRTime(duration)));
     });
 
     automator.on('build-failed', error => {
       priv.errorFromLastBuild = error;
       if (options.browserSync && priv.bsAPI) priv.bsAPI.reload();
-      console.log(red(errorSymbol), grey('build failed'));
+      console.log(red(figures.cross), grey('build failed'));
     });
 
     // start everything up in parallel
