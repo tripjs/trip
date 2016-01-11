@@ -349,7 +349,7 @@ export class Trip extends EventEmitter2 {
       if (!triggers) {
         // it's the first build.
         const numFiles = input.size;
-        headline = cyan('load') + ' ' + srcRelative + ' ' + grey(
+        headline = cyan('load') + ' ' + srcGlob + ' ' + grey(
           numFiles === 1 ? '(1 file)' : `(${numFiles} files)`
         );
       }
