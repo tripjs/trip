@@ -22,7 +22,7 @@ import opn from 'opn';
 import path from 'path';
 import portscannerPlus from 'portscanner-plus';
 import prettyHRTime from 'pretty-hrtime';
-import Promise from 'bluebird';
+import Promise, {promisify} from 'bluebird';
 import resolveFrom from 'resolve-from';
 import serveStatic from 'serve-static';
 import stackTrace from 'stack-trace';
@@ -31,8 +31,6 @@ import url from 'url';
 import {EventEmitter2} from 'eventemitter2';
 import {isString, isFunction, isArray, isBoolean, isNumber} from 'lodash';
 import {red, cyan, white, grey, underline} from 'chalk';
-
-const {coroutine, promisify} = Promise;
 
 const validPluginName = /^[a-z]([a-z]|(-(?!-)))+[a-z]$/; // http://refiddle.com/hfy
 
@@ -56,7 +54,7 @@ const watchDefaults = {
   open: true,
 };
 
-export class Trip extends EventEmitter2 {
+export default class Trip extends EventEmitter2 {
   constructor() {
     super();
 
@@ -159,16 +157,11 @@ export class Trip extends EventEmitter2 {
 
     if (priv.automator) priv.automator.stop();
   }
-}
 
-// Add fake async methods - workaround for https://phabricator.babeljs.io/T2765
-{
   /**
-   * Trip#build()
-   *
    * Starts up the trip, buildilng from A to B.
    */
-  Object.defineProperty(Trip.prototype, 'build', {value: coroutine(function *_build(srcGlob, dest, useWatchDefaults, options) {
+  async build(srcGlob, dest, useWatchDefaults, options) {
     const priv = privates.get(this);
 
     // validate args
@@ -394,7 +387,7 @@ export class Trip extends EventEmitter2 {
     });
 
     // start everything up in parallel
-    const [firstBatchResult, server, bsAPI] = yield Promise.all([
+    const [firstBatchResult, server, bsAPI] = await Promise.all([
       // start the automator, and ge the first batch result
       automator.start(),
 
@@ -425,7 +418,7 @@ export class Trip extends EventEmitter2 {
 
     // log details of the dev server and open it in the browser (if configured)
     if (options.serve) {
-      const serverURL = `http://localhost:${(yield portsReady).server}/`;
+      const serverURL = `http://localhost:${(await portsReady).server}/`;
 
       console.log(
         '\n' + cyan('serving ') + path.relative(cwd, dest) +
@@ -439,9 +432,5 @@ export class Trip extends EventEmitter2 {
     // finish up and return the first build result
     priv.busy = false;
     return firstBatchResult;
-  })});
-}
-
-export default function trip(...args) {
-  return new Trip(...args);
+  }
 }

@@ -10,7 +10,7 @@ import Destination from './Destination';
 import Immutable from 'immutable';
 import indentString from 'indent-string';
 import path from 'path';
-import Promise, {coroutine} from 'bluebird';
+import Promise from 'bluebird';
 import Result from './Result';
 import Source from './Source';
 import subdir from 'subdir';
@@ -181,89 +181,84 @@ export default class Automator extends EventEmitter2 {
     const {watch, source} = privates.get(this);
     if (watch) source.stop();
   }
-}
 
-// add 'async' methods from outside - workaround for https://phabricator.babeljs.io/T2765
-{
   /**
-   * Automator#start()
-   *
    * Starts the automator, and asynchronously returns the results of the first build.
    */
-  Object.defineProperty(Automator.prototype, 'start', {
-    value: coroutine(function *_start() {
-      const priv = privates.get(this);
-      const {source, destination, watch} = priv;
+  async start() {
+    const priv = privates.get(this);
+    const {source, destination, watch} = priv;
 
-      // wait for the source to be primed
-      yield source.prime();
+    // HACK
+    const thisHack = this; // workaround for https://phabricator.babeljs.io/T2765
 
-      // run the first build
-      this.emit('build-starting', {input: source.files, triggers: null});
-      const firstBuild = build.call(this, priv, true);
+    // wait for the source to be primed
+    await source.prime();
 
-      // prime the dest now while the first build is running
-      yield destination.prime();
+    // run the first build
+    this.emit('build-starting', {input: source.files, triggers: null});
+    const firstBuild = build.call(this, priv, true);
 
-      // start getting the watcher ready, if configured
-      if (watch) source.watch();
+    // prime the dest now while the first build is running
+    await destination.prime();
 
-      // wait for the first build to be done
-      let firstResult;
-      try {
-        firstResult = yield firstBuild;
-        this.emit('build-complete', firstResult);
-      }
-      catch (error) {
-        this.emit('build-failed', error);
+    // start getting the watcher ready, if configured
+    if (watch) source.watch();
 
-        // failed initial build in watch mode should not reject; should instead
-        // fulfill with the error
-        if (watch) firstResult = error;
-        else throw error;
-      }
+    // wait for the first build to be done
+    let firstResult;
+    try {
+      firstResult = await firstBuild;
+      this.emit('build-complete', firstResult);
+    }
+    catch (error) {
+      this.emit('build-failed', error);
 
-      // set up watching for further batches
-      if (watch) {
-        // wait for the watcher to be ready
-        yield source.watch();
+      // failed initial build in watch mode should not reject; should instead
+      // fulfill with the error
+      if (watch) firstResult = error;
+      else throw error;
+    }
 
-        // whenever a file is updated, do another build (debounced, so multiple
-        // changes in very quick succession can be handled in one go e.g. due
-        // to a rename or pasting a bunch of files)
-        {
-          let building = Promise.resolve();
-          let triggers = {};
+    // set up watching for further batches
+    if (watch) {
+      // whenever a file is updated, do another build (debounced, so multiple
+      // changes in very quick succession can be handled in one go e.g. due
+      // to a rename or pasting a bunch of files)
 
-          const handleUpdate = _.debounce(() => {
-            // wait for any existing build to finish before starting the next
-            building = building.then(() => {
-              this.emit('build-starting', {input: source.files, triggers});
-              triggers = {};
+      // ensure watcher is ready
+      await source.watch();
 
-              return build.call(this, priv)
-                /* eslint-disable max-nested-callbacks */
-                .then(result => {
-                  this.emit('build-complete', result);
-                })
-                .catch(error => {
-                  this.emit('build-failed', error);
+      let building = Promise.resolve();
+      let triggers = {};
 
-                  // NB. swallowing error here is important
-                })
-                /* eslint-enable max-nested-callbacks */
-              ;
-            });
-          }, 10);
+      const handleUpdate = _.debounce(() => {
+        // wait for any existing build to finish before starting the next
+        building = building.then(() => {
+          thisHack.emit('build-starting', {input: source.files, triggers});
+          triggers = {};
 
-          source.on('updated', (type, file) => {
-            triggers[file] = type;
-            handleUpdate();
-          });
-        }
-      }
+          return build.call(thisHack, priv)
+            /* eslint-disable max-nested-callbacks */
+            .then(result => {
+              thisHack.emit('build-complete', result);
+            })
+            .catch(error => {
+              thisHack.emit('build-failed', error);
 
-      return firstResult;
-    }),
-  });
+              // NB. swallowing error here is important
+            })
+            /* eslint-enable max-nested-callbacks */
+          ;
+        });
+      }, 10);
+
+      source.on('updated', (type, file) => {
+        triggers[file] = type;
+        handleUpdate();
+      });
+    }
+
+    return firstResult;
+  }
 }

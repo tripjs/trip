@@ -11,7 +11,7 @@ import Change from './Change';
 import Directory from './Directory';
 import Immutable from 'immutable';
 import path from 'path';
-import Promise, {coroutine} from 'bluebird';
+import Promise from 'bluebird';
 import sander from 'sander';
 import subdir from 'subdir';
 import trash from 'trash';
@@ -26,18 +26,13 @@ export default class Destination extends Directory {
 
     privates.set(this, priv);
   }
-}
 
-// Add 'async' methods - workaround until https://phabricator.babeljs.io/T2765 is fixed
-{
   /**
-   * Destination#update()
-   *
-   * Updates the files object, and returns details of any changes.
+   * Updates the files object and returns details of any changes.
    */
-  Object.defineProperty(Destination.prototype, 'update', {value: coroutine(function *_update(newFiles, safeDelete) {
+  async update(newFiles, safeDelete) {
     // ensure the in-memory cache has already been primed
-    yield this.prime();
+    await this.prime();
 
     console.assert(Immutable.Map.isMap(newFiles));
 
@@ -51,7 +46,7 @@ export default class Destination extends Directory {
     priv.files = newFiles;
 
     // write any changes to disk...
-    const [writes, deletions] = yield Promise.all([
+    const [writes, deletions] = await Promise.all([
       // write newly created/modified files to disk
       Promise.map(newFiles.entries(), ([file, contents]) => {
         const oldContents = oldFiles.get(file);
@@ -76,23 +71,24 @@ export default class Destination extends Directory {
 
     // delete any directories that are now empty due to deleted files
     for (const {file} of deletions) {
-      yield deleteEmptyParents(path.resolve(priv.dir, file), priv.dir);
+      await deleteEmptyParents(path.resolve(priv.dir, file), priv.dir);
     }
 
     return [...writes, ...deletions];
-  })});
+  }
 }
 
-function deleteEmptyParents(file, until) {
-  return Promise.resolve().then(() => {
-    if (until === file || !subdir(until, file)) return null;
+async function deleteEmptyParents(file, until) {
+  if (until === file || !subdir(until, file)) return null;
 
-    file = path.dirname(file);
+  file = path.dirname(file);
 
-    return sander.rmdir(file)
-      .then(() => deleteEmptyParents(file, until))
-      .catch(error => {
-        if (error.code !== 'ENOTEMPTY') throw error;
-      });
-  });
+  try {
+    await sander.rmdir(file);
+  }
+  catch (error) {
+    if (error.code !== 'ENOTEMPTY') throw error;
+  }
+
+  await deleteEmptyParents(file, until);
 }
