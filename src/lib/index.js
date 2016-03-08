@@ -66,9 +66,9 @@ const argv = minimist(process.argv.slice(2));
 const cliPackage = require('../../package.json');
 
 if (argv.babel !== '0') {
-	// choose ideal presets for the current engine
+	// choose ideal babel config for the current engine
 	const presets = ['stage-0'];
-	const nodeVersion = Number(process.versions.node.split('.'));
+	const nodeVersion = Number(process.versions.node.split('.')[0]);
 	if (nodeVersion > 4) presets.push('es2015-node5');
 	else if (nodeVersion === 4) presets.push('es2015-node4');
 	else presets.push('es2015');
