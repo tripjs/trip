@@ -54,7 +54,6 @@ test('node-style callbacks (error, with flags)', async t => {
 	t.not(stderr, '');
 });
 
-
 test('sync, default function (success)', async t => {
 	const { stdout, stderr } = await run(cliPath);
 	const lines = getLogs(stdout);
