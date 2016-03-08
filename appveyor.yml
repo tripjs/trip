@@ -1,4 +1,3 @@
-# AppVeyor file
 # http://www.appveyor.com/docs/appveyor-yml
 
 version: "{build}"
@@ -10,7 +9,6 @@ environment:
     - nodejs_version: "5"
     - nodejs_version: "4.2"
     - nodejs_version: "0.12"
-    - nodejs_version: "0.10"
 
 install:
   - ps: Install-Product node $env:nodejs_version
@@ -26,4 +24,4 @@ matrix:
   fast_finish: true
 
 cache:
-  - 'node_modules -> package.json'              # local npm modules
+  - 'node_modules -> package.json'
