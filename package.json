@@ -26,6 +26,7 @@
     "bluebird": "^3.3.4",
     "chalk": "^1.1.1",
     "clear-trace": "0.0.7",
+    "figures": "^1.4.0",
     "liftoff": "^2.2.0",
     "lodash": "^4.6.1",
     "minimist": "^1.2.0",
