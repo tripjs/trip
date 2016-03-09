@@ -102,12 +102,13 @@ cli.launch(options, async env => {
 		process.exit(1);
 	}
 
-	// check for version difference between cli and local installation
-	if (cliPackage.version !== env.modulePackage.version) {
-		say(yellow('Warning: trip version mismatch:'));
-		say(yellow('Global trip is'), cliPackage.version);
-		say(yellow('Local trip is'), env.modulePackage.version);
-	}
+	// NOT WORKING:
+	// // check for version difference between cli and local installation
+	// if (cliPackage.version !== env.modulePackage.version) {
+	// 	say(yellow('Warning: trip version mismatch:'));
+	// 	say(yellow('  Global trip is'), cliPackage.version);
+	// 	say(yellow('  Local trip is'), env.modulePackage.version);
+	// }
 
 	// change directory if necessary, and warn about it
 	if (env.configBase !== process.cwd()) {
