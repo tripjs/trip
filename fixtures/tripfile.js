@@ -1,65 +1,26 @@
-'use strict';
+import { delay } from 'bluebird';
+import gulp from 'gulp';
 
-var Promise = require('bluebird');
+export async function greet({ leaving }) {
+	console.log(leaving ? 'Goodbye,' : 'Hello,');
 
-exports['say-thing-2'] = function () {
-  return Promise.delay(150).then(function () {
-    console.log('thing 2');
-  });
-};
+	await delay(200);
+	console.log('world!');
+}
 
-exports['say-thing-1'] = function () {
-  return Promise.delay(100).then(function () {
-    console.log('thing 1');
-  });
-};
+export function oldSchool({ shouldFail }, done) {
+	delay(400).then(() => {
+		console.log('about to call back');
 
-exports.err = function () {
-  throw new Error('shit');
-};
+		if (shouldFail) done(new Error('failed'));
+		else done();
+	});
+}
 
+export function streamy() {
+	return gulp.src('foo/**/*.css').pipe(gulp.dest('tmp'));
+}
 
-// expected order: 1,2,3,4
-exports['parallel-subtasks'] = [
-  'say-thing-1',
-
-  [
-    function () {
-      return Promise.delay(200).then(function () {
-        console.log('thing 3');
-      });
-    },
-
-    'say-thing-2' // takes 150ms
-  ],
-
-  function () {
-    return Promise.delay(50).then(function () {
-      console.log('thing 4');
-    });
-  }
-];
-
-
-// exports['task-arguments'] = [
-//   function (msg1, msg2) {
-//     setTimeout(function () {
-//       console.log('action 1', msg1, msg2);
-//       done();
-//     }, 100);
-//   },
-
-//   function (msg, done) {
-//     console.log('action 2', msg);
-//     done();
-//   }
-// ];
-
-
-exports['smoke-test'] = function () {
-  var path = require('path');
-  console.assert(
-    this === require(path.resolve(__dirname, '..', '..')),
-    '`this` in a task is trip'
-  );
-};
+export default function () {
+	console.log('this is the default task');
+}
