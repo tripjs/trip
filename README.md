@@ -19,8 +19,8 @@ A minimalist task runner for Node.js.
 
 Notes:
 
-- You can use ES2016 syntax and it will just work ([see below](#ES2015)).
-- Your functions may take a `flags` object as the first argument, allowing you to set simple boolean flags from the command line ([see below](#Flags)).
+- You can use ES2016 syntax and it will just work ([see below](#es2015)).
+- Your functions may take a `flags` object as the first argument, allowing you to set simple boolean flags from the command line ([see below](#flags)).
 - For compatibility with old callback-style APIs, you may also take a `done` callback as a second argument, if you really have to.
 - You can run multiple tasks in series like this: `> trip task1 task2 task3`
 
