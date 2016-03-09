@@ -74,7 +74,11 @@ if (argv.babel !== '0') {
 	else if (nodeVersion === 4) presets.push('es2015-node4');
 	else presets.push('es2015');
 
-	require('babel-register')({ presets }); // eslint-disable-line global-require
+	// eslint-disable-line global-require
+	require('babel-register')({
+		presets,
+		ignore: /node_modules/,
+	});
 }
 
 const cli = new Liftoff({
