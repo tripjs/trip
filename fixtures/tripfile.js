@@ -1,4 +1,5 @@
 import { delay } from 'bluebird';
+import gulp from 'gulp';
 
 export async function greet({ leaving }) {
 	console.log(leaving ? 'Goodbye,' : 'Hello,');
@@ -14,6 +15,10 @@ export function oldSchool({ shouldFail }, done) {
 		if (shouldFail) done(new Error('failed'));
 		else done();
 	});
+}
+
+export function streamy() {
+	return gulp.src('foo/**/*.css').pipe(gulp.dest('tmp'));
 }
 
 export default function () {

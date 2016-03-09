@@ -62,6 +62,14 @@ test('sync, default function (success)', async t => {
 	t.is(stderr, '');
 });
 
+test('returning a stream (success)', async t => {
+	const { stdout, stderr } = await run(cliPath, ['streamy']);
+	const lines = getLogs(stdout);
+
+	t.same(lines, []);
+	t.is(stderr, '');
+});
+
 // test.todo('tasks can return streams, e.g. gulp streams');
 // test.todo('tasks that return/resolve with something unexpected cause an exception');
 

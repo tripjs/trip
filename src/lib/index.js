@@ -1,10 +1,12 @@
 import 'babel-polyfill';
 import Bluebird from 'bluebird';
 import clearTrace from 'clear-trace';
+import endOfStream from 'end-of-stream';
 import figures from 'figures';
 import Liftoff from 'liftoff';
 import minimist from 'minimist';
 import prettyHRTime from 'pretty-hrtime';
+import streamConsume from 'stream-consume';
 import tildify from 'tildify';
 import { isFunction } from 'lodash';
 import { red, grey, yellow, cyan, green } from 'chalk';
@@ -159,8 +161,47 @@ cli.launch(options, async env => {
 				const taskStart = process.hrtime();
 
 				try {
-					if (fn.length > 1) await Bluebird.promisify(fn)(flags);
-					else await Bluebird.resolve(fn(flags));
+					if (fn.length > 1) {
+						// call it with a done-callback, and assert that it doesn't return a value
+						await new Bluebird((resolve, reject) => {
+							const r = fn(flags, error => {
+								if (error) {
+									reject(error);
+									return;
+								}
+								resolve();
+							});
+
+							if (r) {
+								say(red(`task function "${taskName}" accepted a 'done' callback but also returned something`));
+								reject(new Error('trip: callback-style task must not return anything'));
+							}
+						});
+					}
+					else {
+						const r = await Bluebird.resolve(fn(flags));
+
+						// handle task returning a stream
+						if (r) {
+							if (isFunction(r.pipe)) {
+								await new Bluebird((resolve, reject) => {
+									endOfStream(r, { error: true, readable: r.readable, writable: r.writable && !r.readable }, error => {
+										if (error) reject(error);
+										else resolve();
+									});
+
+									// make sure the stream ends
+									streamConsume(r);
+								});
+							}
+							else {
+								say(red(`unsupported return value from task function: ${taskName}`));
+								say(red(`(you may only return/resolve with a stream or undefined)`));
+
+								throw new Error(`trip: task returned an unsupported value`);
+							}
+						}
+					}
 				}
 				catch (error) {
 					// report task failure
