@@ -14,37 +14,35 @@ A minimalist task runner for Node.js.
 
 (Or install it locally for your project with `--save-dev`, if you prefer.)
 
----
-
 ## Usage
 
 1. Make a `tripfile.js` and `export` some functions from it.
 2. Run the named functions from your CLI using `trip FUNCTION_NAME`.
 
-**Notes:**
+You can use ES2016 syntax and it will just work.
 
-- You can use ES2016 syntax and it will just work ([see below](#es2015)).
-- You can run multiple tasks in series like this: `> trip task1 task2 task3`
-
----
+You can run multiple tasks in series like this: `> trip task1 task2 task3`
 
 ## Example tripfile.js
 
-There's no need to import anything or register anything – just `export` some functions:
+A tripfile is an ES2016 module that exports some functions:
 
 ```js
-// simple task - runs with `trip speak`
+// > trip speak
 export function speak() {
 	console.log('Hello world!');
 }
 
-// do something async
+// > trip wow
 export async function wow() {
 	await somePromise();
 }
-```
 
----
+// > trip
+export async default function () {
+	console.log('this is the default task');
+}
+```
 
 ## Flags
 
@@ -59,13 +57,9 @@ export function speak({ leaving }) {
 }
 ```
 
----
-
 ## ES2016
 
 Your tripfile is automatically compiled with Babel. Trip uses the [es2015](https://babeljs.io/docs/plugins/preset-es2015/) and [stage-0](https://babeljs.io/docs/plugins/preset-stage-0/) presets by default, so you don't need to bring your own Babel config. But if you do have your own config in a `.babelrc` or `package.json`, Babel will use that instead.
-
----
 
 ## Async tasks
 
@@ -76,9 +70,7 @@ Trip understands several kinds of async:
 - functions that return streams
 - functions that explicitly accept a `done` callback as a second argument (for compatibility with old APIs)
 
-When you run a series of tasks (`> trip task1 task2`), trip waits for each task to finish before starting the next.
-
----
+When you run multiple tasks from one command (`> trip task1 task2`), trip waits for each task to finish before starting the next.
 
 ## License
 
