@@ -4,6 +4,8 @@
 
 A minimalist task runner for Node.js.
 
+---
+
 ## Install
 
 ```sh
@@ -11,6 +13,8 @@ A minimalist task runner for Node.js.
 ```
 
 (Or install it locally for your project with `--save-dev`, if you prefer.)
+
+---
 
 ## Usage
 
@@ -22,7 +26,9 @@ A minimalist task runner for Node.js.
 - You can use ES2016 syntax and it will just work ([see below](#es2015)).
 - You can run multiple tasks in series like this: `> trip task1 task2 task3`
 
-### Example tripfile.js
+---
+
+## Example tripfile.js
 
 There's no need to import anything or register anything – just `export` some functions:
 
@@ -38,7 +44,9 @@ export async function wow() {
 }
 ```
 
-### Flags
+---
+
+## Flags
 
 You can pass simple boolean flags from the command line using `:` as a delimiter.
 
@@ -51,9 +59,13 @@ export function speak({ leaving }) {
 }
 ```
 
+---
+
 ## ES2016
 
 Your tripfile is automatically compiled with Babel. Trip uses the [es2015](https://babeljs.io/docs/plugins/preset-es2015/) and [stage-0](https://babeljs.io/docs/plugins/preset-stage-0/) presets by default, so you don't need to bring your own Babel config. But if you do have your own config in a `.babelrc` or `package.json`, Babel will use that instead.
+
+---
 
 ## Async tasks
 
