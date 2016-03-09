@@ -15,13 +15,11 @@ A minimalist task runner for Node.js.
 ## Usage
 
 1. Make a `tripfile.js` and `export` some functions from it.
-2. Run the named functions from your CLI using `trip NAME`.
+2. Run the named functions from your CLI using `trip FUNCTION_NAME`.
 
-Notes:
+**Notes:**
 
 - You can use ES2016 syntax and it will just work ([see below](#es2015)).
-- Your functions may take a `flags` object as the first argument, allowing you to set simple boolean flags from the command line ([see below](#flags)).
-- For compatibility with old callback-style APIs, you may also take a `done` callback as a second argument, if you really have to.
 - You can run multiple tasks in series like this: `> trip task1 task2 task3`
 
 ### Example tripfile.js
@@ -44,7 +42,7 @@ export async function wow() {
 
 You can pass simple boolean flags from the command line using `:` as a delimiter.
 
-For example, the command `> trip foo:bar:baz` will call the `foo` function with the flags `{bar: true, baz: true}`.
+For example, the command `> trip foo:bar:baz` will call the `foo` function with the flags `{ bar: true, baz: true }`.
 
 ```js
 // run this with `trip speak:leaving:polite` to set enable the flag
@@ -56,6 +54,17 @@ export function speak({ leaving }) {
 ## ES2016
 
 Your tripfile is automatically compiled with Babel. Trip uses the [es2015](https://babeljs.io/docs/plugins/preset-es2015/) and [stage-0](https://babeljs.io/docs/plugins/preset-stage-0/) presets by default, so you don't need to bring your own Babel config. But if you do have your own config in a `.babelrc` or `package.json`, Babel will use that instead.
+
+## Async tasks
+
+Trip understands several kinds of async:
+
+- async functions
+- functions that return promises
+- functions that return streams
+- functions that explicitly accept a `done` callback as a second argument (for compatibility with old APIs)
+
+When you run a series of tasks (`> trip task1 task2`), trip waits for each task to finish before starting the next.
 
 ---
 
