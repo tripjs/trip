@@ -21,7 +21,6 @@ function finish() {
 		say(red(figures.cross, 'exiting with code 1'));
 		process.exit(1);
 	}
-	process.exit(0);
 }
 
 process.on('uncaughtException', err => {
