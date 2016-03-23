@@ -10,8 +10,6 @@ test.before(() => {
 	process.chdir(fixturesDir);
 });
 
-// TODO: switch to test.series() when it ships in ava
-
 test('regular async task (success)', async t => {
 	const { stdout, stderr } = await run(cliPath, ['greet']);
 	const lines = getLogs(stdout);
@@ -70,8 +68,8 @@ test('returning a stream (success)', async t => {
 	t.is(stderr, '');
 });
 
-// test.todo('tasks can return streams, e.g. gulp streams');
-// test.todo('tasks that return/resolve with something unexpected cause an exception');
+test.todo('tasks can return streams, e.g. gulp streams');
+test.todo('tasks that return/resolve with something unexpected cause an exception');
 
 // grab relevant lines from a stdout string (excluding trip control messages)
 function getLogs(stdout) {
