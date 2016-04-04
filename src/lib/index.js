@@ -80,7 +80,7 @@ if (argv.babel !== '0') {
 		presets,
 		ignore: name => {
 			// console.log('should babel ignore?', !subdir(process.cwd(), name) || /node_modules/.test(name), name);
-			return !subdir(process.cwd(), name) || /[^\/\\]node_modules[$\/\\]/.test(name)
+			return !subdir(process.cwd(), name) || /node_modules/.test(name)
 		},
 	});
 }
