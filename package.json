@@ -1,7 +1,7 @@
 {
   "name": "trip",
   "description": "The minimalist's task runner.",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "ava": {
     "babel": false,
     "files": "dist/test/**/*.test.js",
