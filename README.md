@@ -1,15 +1,15 @@
 # trip
 
-[![NPM version][npm-image]][npm-url] [![Linux Build Status][travis-image]][travis-url] [![Windows Build Status][appveyor-image]][appveyor-url] [![Dependency Status][depstat-image]][depstat-url] [![devDependency Status][devdepstat-image]][devdepstat-url] [![peerDependency Status][peerdepstat-image]][peerdepstat-url]
+> The minimalist's task runner.
 
-A minimalist task runner for Node.js.
+[![NPM version][npm-image]][npm-url] [![Linux Build Status][travis-image]][travis-url] [![Windows Build Status][appveyor-image]][appveyor-url] [![Dependency Status][depstat-image]][depstat-url] [![devDependency Status][devdepstat-image]][devdepstat-url] [![peerDependency Status][peerdepstat-image]][peerdepstat-url]
 
 ---
 
 ## Install
 
 ```sh
-> npm install -g trip
+> npm install trip -g
 ```
 
 (Or install it locally for your project with `--save-dev`, if you prefer.)
@@ -30,17 +30,17 @@ A tripfile is an ES2016 module that exports some functions:
 ```js
 // > trip speak
 export function speak() {
-	console.log('Hello world!');
+    console.log('Hello world!');
 }
 
 // > trip wow
 export async function wow() {
-	await somePromise();
+    await somePromise();
 }
 
 // > trip
 export async default function () {
-	console.log('this is the default task');
+    console.log('this is the default task');
 }
 ```
 
@@ -53,7 +53,7 @@ For example, the command `> trip foo:bar:baz` will call the `foo` function with 
 ```js
 // run this with `trip speak:leaving:polite` to set enable the flag
 export function speak({ leaving }) {
-	console.log((leaving ? 'Goodbye' : 'Hello') + ' world!');
+    console.log((leaving ? 'Goodbye' : 'Hello') + ' world!');
 }
 ```
 
