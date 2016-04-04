@@ -1,6 +1,6 @@
 {
   "name": "trip",
-  "description": "A minimalist task runner.",
+  "description": "The minimalist's task runner.",
   "version": "1.0.2",
   "ava": {
     "babel": false,
@@ -52,7 +52,6 @@
   },
   "files": [
     "dist/lib",
-    "src/lib",
     "cli.js"
   ],
   "license": "MIT",
