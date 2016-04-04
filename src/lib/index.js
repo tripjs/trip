@@ -76,12 +76,11 @@ if (argv.babel !== '0') {
 	else if (nodeVersion === 4) presets.push(require('babel-preset-es2015-node4'));
 	else presets.push(require('babel-preset-es2015'));
 
-	// eslint-disable-line global-require
 	require('babel-register')({
 		presets,
 		ignore: name => {
 			// console.log('should babel ignore?', !subdir(process.cwd(), name) || /node_modules/.test(name), name);
-			return !subdir(process.cwd(), name) || /node_modules/.test(name)
+			return !subdir(process.cwd(), name) || /[^\/\\]node_modules[$\/\\]/.test(name)
 		},
 	});
 }
