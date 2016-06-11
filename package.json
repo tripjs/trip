@@ -41,7 +41,7 @@
   },
   "devDependencies": {
     "ava": "^0.13.0",
-    "babel-cli": "^6.6.5",
+    "babel-cli": "^6.10.1",
     "execa": "^0.2.2",
     "gulp": "^3.9.1",
     "rimraf": "^2.5.2",
