@@ -12,6 +12,7 @@ import Liftoff from 'liftoff';
 import subdir from 'subdir';
 import { red, grey, yellow, cyan, green } from 'chalk';
 import { isFunction } from 'lodash';
+import pkg from '../../package.json';
 
 let taskRunning = false;
 let failed = false;
@@ -69,15 +70,8 @@ const argv = minimist(process.argv.slice(2));
 // const cliPackage = require('../../package.json');
 
 if (argv.babel !== '0') {
-	// choose ideal babel config for the current engine
-	const presets = [require('babel-preset-stage-0')];
-	const nodeVersion = Number(process.versions.node.split('.')[0]);
-	if (nodeVersion > 4) presets.push(require('babel-preset-es2015-node5'));
-	else if (nodeVersion === 4) presets.push(require('babel-preset-es2015-node4'));
-	else presets.push(require('babel-preset-es2015'));
-
 	require('babel-register')({
-		presets,
+		...pkg.babel,
 		ignore: name => {
 			// console.log('should babel ignore?', !subdir(process.cwd(), name) || /node_modules/.test(name), name);
 			return !subdir(process.cwd(), name) || /node_modules/.test(name)

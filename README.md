@@ -9,10 +9,13 @@
 ## Install
 
 ```sh
+> yarn global add trip
+
+# or...
 > npm install trip -g
 ```
 
-(Or install it locally for your project with `--save-dev`, if you prefer.)
+Or install it locally inside a project if you prefer.
 
 ## Usage
 
@@ -25,7 +28,7 @@ You can run multiple tasks in series like this: `> trip task1 task2 task3`
 
 ## Example tripfile.js
 
-A tripfile is an ES2016 module that exports some functions:
+A tripfile is a module that exports some functions:
 
 ```js
 // > trip speak
@@ -46,7 +49,7 @@ export async default function () {
 
 ## Flags
 
-You can pass simple boolean flags from the command line using `:` as a delimiter.
+You can pass boolean flags from the command line, using `:` as a delimiter.
 
 For example, the command `> trip foo:bar:baz` will call the `foo` function with the flags `{ bar: true, baz: true }`.
 
@@ -59,7 +62,7 @@ export function speak({ leaving }) {
 
 ## ES2016
 
-Your tripfile is automatically compiled with Babel. Trip uses the [es2015](https://babeljs.io/docs/plugins/preset-es2015/) and [stage-0](https://babeljs.io/docs/plugins/preset-stage-0/) presets by default, so you don't need to bring your own Babel config. But if you do have your own config in a `.babelrc` or `package.json`, Babel will use that instead.
+Your tripfile is automatically compiled with Babel. Trip uses the [env](https://babeljs.io/docs/plugins/preset-env/) and preset and most [stage-0](https://babeljs.io/docs/plugins/preset-stage-0/) features by default, so you don't need to bring your own Babel config. But if you do have your own config in a `.babelrc` or `package.json`, Babel will use that instead.
 
 ## Async tasks
 

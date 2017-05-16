@@ -14,7 +14,7 @@ test('regular async task (success)', async t => {
 	const { stdout, stderr } = await run(cliPath, ['greet']);
 	const lines = getLogs(stdout);
 
-	t.same(lines, ['Hello,', 'world!']);
+	t.deepEqual(lines, ['Hello,', 'world!']);
 	t.is(stderr, '');
 });
 
@@ -22,7 +22,7 @@ test('regular async task (success, with flags)', async t => {
 	const { stdout, stderr } = await run(cliPath, ['greet:leaving']);
 	const lines = getLogs(stdout);
 
-	t.same(lines, ['Goodbye,', 'world!']);
+	t.deepEqual(lines, ['Goodbye,', 'world!']);
 	t.is(stderr, '');
 });
 
@@ -30,7 +30,7 @@ test('callback-style async task (success)', async t => {
 	const { stdout, stderr } = await run(cliPath, ['oldSchool']);
 	const lines = getLogs(stdout);
 
-	t.same(lines, ['about to call back']);
+	t.deepEqual(lines, ['about to call back']);
 	t.is(stderr, '');
 });
 
@@ -48,7 +48,7 @@ test('node-style callbacks (error, with flags)', async t => {
 	const { stdout, stderr } = error;
 	const lines = getLogs(stdout);
 
-	t.same(lines, ['about to call back']);
+	t.deepEqual(lines, ['about to call back']);
 	t.not(stderr, '');
 });
 
@@ -56,7 +56,7 @@ test('sync, default function (success)', async t => {
 	const { stdout, stderr } = await run(cliPath);
 	const lines = getLogs(stdout);
 
-	t.same(lines, ['this is the default task']);
+	t.deepEqual(lines, ['this is the default task']);
 	t.is(stderr, '');
 });
 
@@ -64,7 +64,7 @@ test('returning a stream (success)', async t => {
 	const { stdout, stderr } = await run(cliPath, ['streamy']);
 	const lines = getLogs(stdout);
 
-	t.same(lines, []);
+	t.deepEqual(lines, []);
 	t.is(stderr, '');
 });
 
